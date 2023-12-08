@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import cl.ucn.hilos.PelotasHilos;
 import cl.ucn.modelo.Pelota;
 
 
@@ -17,6 +18,8 @@ public class MarcoRebote extends JFrame{
 	private static final long serialVersionUID = 1L;
 
 	private LaminaPelota lamina;
+	
+	Thread hilo;
 	
 	public MarcoRebote(){
 		
@@ -50,6 +53,15 @@ public class MarcoRebote extends JFrame{
 			
 		});
 		
+		ponerBoton(laminaBotones, "Detener", new ActionListener(){
+			
+			public void actionPerformed(ActionEvent evento){
+				
+				detener();
+			}
+			
+		});
+		
 		add(laminaBotones, BorderLayout.SOUTH);
 	}
 	
@@ -75,13 +87,14 @@ public class MarcoRebote extends JFrame{
 			
 			lamina.add(pelota);
 			
-			for (int i=1; i<=3000; i++){
-				
-				pelota.mueve_pelota(lamina.getBounds());
-				
-				lamina.paint(lamina.getGraphics());
-				
-			}
+			Runnable pelotaHilos = new PelotasHilos(pelota, lamina);
+			hilo = new Thread(pelotaHilos);
+			hilo.start();
 	}
 	
+	public void detener() {
+		
+		hilo.stop();
+	}
+
 }
